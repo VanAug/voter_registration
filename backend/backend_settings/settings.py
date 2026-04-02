@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import africastalking
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +27,19 @@ SECRET_KEY = 'django-insecure-=0gcs$+4v7d%r1=uxe)1o^sg-8ci-rkxsfrcq)1vanhj3e6*0x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'undeciphered-cisalpine-jefferey.ngrok-free.dev',  # add your exact ngrok URL (without https://)
+]
 
 # Application definition
+
+AFRICASTALKING_USERNAME = 'BRIAN OKELLO'  # Often 'sandbox' for testing
+AFRICASTALKING_API_KEY = 'atsk_8e547d02fca6e7dc6c414790f65161fd4ea91ea52628ad4593346c96292b122797dfdf63'
+
+# Initialize the SDK
+africastalking.initialize(AFRICASTALKING_USERNAME, AFRICASTALKING_API_KEY)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -104,6 +115,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'ussd-sessions',
+    }
+}
 
 
 # Internationalization

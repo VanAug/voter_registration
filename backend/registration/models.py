@@ -10,9 +10,12 @@ class RegistrationChannel(models.TextChoices):
 class Applicant(models.Model):
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(
-        max_length=15,
-        unique=True,
-        validators=[RegexValidator(r'^\+?254[0-9]{9}$', 'Enter a valid Kenyan phone number.')]
+    max_length=15,
+    unique=True,
+    validators=[RegexValidator(
+        r'^(0|\+254|254)?[0-9]{9}$', 
+        'Enter a valid Kenyan phone number (e.g., 0712345678, +254712345678)'
+    )]
     )
     id_number = models.CharField(max_length=20, unique=True)
     county = models.CharField(max_length=100)

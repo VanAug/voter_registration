@@ -32,19 +32,18 @@ def _parse_csv_env(var_name: str, default: str = "") -> list[str]:
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
     "django-insecure-=0gcs$+4v7d%r1=uxe)1o^sg-8ci-rkxsfrcq)1vanhj3e6*0x",
 )
 
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'undeciphered-cisalpine-jefferey.ngrok-free.dev',  # add your exact ngrok URL (without https://)
-]
 ALLOWED_HOSTS = _parse_csv_env(
     "ALLOWED_HOSTS",
     "localhost,127.0.0.1,undeciphered-cisalpine-jefferey.ngrok-free.dev",
@@ -73,7 +72,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 # Guardrails: keep admin-required middleware even if this list is later modified.
@@ -101,7 +106,6 @@ TEMPLATES = [
     },
 ]
 
-
 # Guardrail: ensure a DjangoTemplates backend exists for admin pages.
 if not any(
     tpl.get('BACKEND') == 'django.template.backends.django.DjangoTemplates'
@@ -122,6 +126,12 @@ if not any(
         }
     )
 
+WSGI_APPLICATION = 'backend.backend_settings.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+#
 # Priority:
 # 1) Render-style DATABASE_URL (recommended in production)
 # 2) Explicit DB_* variables
@@ -151,7 +161,7 @@ else:
         }
     }
 
-#Password validation
+# Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -188,12 +198,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/6.0/howto/static-files/
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 CORS_ALLOWED_ORIGINS = _parse_csv_env("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = DEBUG and not CORS_ALLOWED_ORIGINS
-
-
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_WHATSAPP_NUMBER = 'whatsapp:+14155238886'

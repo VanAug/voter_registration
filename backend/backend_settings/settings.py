@@ -35,7 +35,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'undeciphered-cisalpine-jefferey.ngrok-free.dev',  # add your exact ngrok URL (without https://)
+    'undeciphered-cisalpine-jefferey.ngrok-free.dev', 
 ]
 
 # Application definition
@@ -146,11 +146,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-CORS_ALLOW_ALL_ORIGINS = True   # for development only
-# Or specify your React dev server:
-# CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
-
-
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN ')
-TWILIO_WHATSAPP_NUMBER = 'whatsapp:+14155238886'
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+SECRET_KEY = os.getenv("SECRET_KEY")

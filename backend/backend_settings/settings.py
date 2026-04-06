@@ -74,6 +74,53 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 ]
+
+# Guardrails: keep admin-required middleware even if this list is later modified.
+for _required_middleware in (
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+):
+    if _required_middleware not in MIDDLEWARE:
+        MIDDLEWARE.append(_required_middleware)
+
+ROOT_URLCONF = 'backend.backend_settings.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+
+# Guardrail: ensure a DjangoTemplates backend exists for admin pages.
+if not any(
+    tpl.get('BACKEND') == 'django.template.backends.django.DjangoTemplates'
+    for tpl in TEMPLATES
+):
+    TEMPLATES.append(
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
+        }
+    )
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',

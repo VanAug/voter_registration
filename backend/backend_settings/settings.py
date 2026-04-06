@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import africastalking
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 
@@ -120,6 +121,53 @@ if not any(
             },
         }
     )
+
+# Priority:
+# 1) Render-style DATABASE_URL (recommended in production)
+# 2) Explicit DB_* variables
+# 3) Local sqlite fallback
+if os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.parse(
+            os.getenv("DATABASE_URL", ""),
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
+    }
+else:
+    default_engine = os.getenv("DB_ENGINE", "django.db.backends.sqlite3")
+    DATABASES = {
+        "default": {
+            "ENGINE": default_engine,
+            "NAME": (
+                os.getenv("DB_NAME", str(BASE_DIR / "db.sqlite3"))
+                if default_engine == "django.db.backends.sqlite3"
+                else os.getenv("DB_NAME", "voter_db")
+            ),
+            "USER": os.getenv("DB_USER", "voter_user"),
+            "PASSWORD": os.getenv("DB_PASSWORD", "securepassword123"),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        }
+    }
+
+#Password validation
+# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 CACHES = {
     'default': {

@@ -71,6 +71,7 @@ def whatsapp_webhook(request: HttpRequest):
         else:
             voter_status = incoming_msg == '1'
 
+            phone_number = sender.replace("whatsapp:", ""),
             try:
                 # Safe access using .get()
                 id_number = session_data.get('id_number')
@@ -86,7 +87,7 @@ def whatsapp_webhook(request: HttpRequest):
                 else:
                     Applicant.objects.create(
                         full_name=full_name,
-                        phone_number=sender,
+                        phone_number=phone_number,
                         id_number=id_number,
                         county=county,
                         voter_status=voter_status,

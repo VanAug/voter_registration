@@ -99,8 +99,9 @@ def whatsapp_webhook(request: HttpRequest):
                         "Type 'MENU' for other options."
                     )
 
-            except Exception:
-                response_text = "An internal error occurred. Please try again later."
+            except Exception as e:
+                print("ERROR:", str(e))  # 👈 logs to Render
+                response_text = f"Error: {str(e)}"
 
             finally:
                 cache.delete(cache_key)

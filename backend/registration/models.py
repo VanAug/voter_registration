@@ -10,7 +10,7 @@ class RegistrationChannel(models.TextChoices):
 class Applicant(models.Model):
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(
-    max_length=15,
+    max_length=30,
     unique=True,
     validators=[RegexValidator(
         r'^(0|\+254|254)?[0-9]{9}$', 

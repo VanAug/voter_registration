@@ -4,7 +4,7 @@ A scalable, mobile‑first voter registration platform that allows users to regi
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Multi‑channel registration** – USSD, WhatsApp, and web form.
 - **Centralised PostgreSQL database** – stores all applicants.
@@ -14,7 +14,14 @@ A scalable, mobile‑first voter registration platform that allows users to regi
 
 ---
 
-## 📦 Tech Stack
+To access whatsapp bot:
+ send join frighten-zebra to whatsapp number +1 415 523 8886
+ send "menu" for options 
+
+to register through ussd:
+ dial *384*99767#
+
+## Tech Stack
 
 ### Backend
 - Django 6.0 + Django REST Framework
@@ -50,12 +57,7 @@ pip install -r requirements.txt
 Create a .env file in the backend/ directory (next to manage.py):
 text
 
-SECRET_KEY=your-django-secret-key
-DEBUG=True
-DATABASE_URL=postgresql://user:pass@localhost:5432/voter_db
-
 If using PostgreSQL locally, create the database:
-sql
 
 CREATE DATABASE voter_db;
 
@@ -74,7 +76,8 @@ npm install
 npm run dev
 
 The frontend will run on http://localhost:5173 and proxy API requests to Django (http://localhost:8000).
-🌐 Deployment
+
+Deployment
 Backend (Render)
 
     Push code to GitHub.
@@ -103,37 +106,7 @@ Frontend (Vercel)
 
     Deploy.
 
-🔐 Environment Variables
-Backend (settings.py reads from environment)
-Variable	Description	Example
-SECRET_KEY	Django secret key	django-insecure-...
-DEBUG	Set to False in production	False
-DATABASE_URL	PostgreSQL connection string	postgresql://user:pass@host:5432/db
-ALLOWED_HOSTS	Comma‑separated domains	.onrender.com,localhost
-CORS_ALLOWED_ORIGINS	Frontend URLs	https://your-app.vercel.app
-CSRF_TRUSTED_ORIGINS	Same as above	same
-AFRICASTALKING_USERNAME	Africa’s Talking sandbox username	sandbox
-AFRICASTALKING_API_KEY	Your API key	atsk_...
-TWILIO_ACCOUNT_SID	Twilio SID	AC...
-TWILIO_AUTH_TOKEN	Twilio auth token	...
-TWILIO_WHATSAPP_NUMBER	Twilio WhatsApp sandbox number	whatsapp:+14155238886
-Frontend (Vercel / local)
-Variable	Description
-VITE_API_BASE_URL	Backend URL (e.g., https://your-backend.onrender.com)
 
-
-📡 API Endpoints
-Method	Endpoint	Description	Auth
-POST	/api/register/web/	Website registration	No
-POST	/api/register/whatsapp/	WhatsApp registration (internal)	No
-POST	/api/register/ussd/simulate/	USSD simulation	No
-POST	/api/ussd/callback/	Africa’s Talking USSD webhook	No
-POST	/api/whatsapp/webhook/	Twilio WhatsApp webhook	No
-GET	/api/applicants/	List all applicants	Token
-DELETE	/api/applicants/<id>/	Delete applicant	Token
-GET	/api/check-status/<id_number>/	Public status check	No
-
-Authentication: For protected endpoints, include Authorization: Token <your-token> header.
 📱 USSD Integration (Africa’s Talking)
 
     Create a USSD channel in your Africa’s Talking dashboard.
@@ -162,13 +135,8 @@ curl -X POST http://localhost:8000/api/register/web/ \
   -H "Content-Type: application/json" \
   -d '{"full_name":"Test User","phone_number":"0712345678","id_number":"12345678","county":"Nairobi","voter_status":true}'
 
-Run tests (if written)
-bash
-
-python manage.py test registration
 
 📂 Project Structure
-text
 
 voter-registration/
 ├── backend/                     # Django project root
@@ -196,35 +164,5 @@ voter-registration/
 │   └── vite.config.js
 └── README.md
 
-🐛 Troubleshooting
-500 / 502 errors on WhatsApp webhook
 
-    Ensure CACHES uses LocMemCache (no database table needed).
-
-    Check Render logs for exceptions.
-
-“relation does not exist”
-
-    Switch to LocMemCache – no createcachetable required.
-
-CORS errors
-
-    Verify CORS_ALLOWED_ORIGINS includes your frontend domain.
-
-USSD session resets
-
-    Use LocMemCache and ensure only one worker runs (free tier).
-
-📄 License
-
-MIT – free for educational and commercial use.
-👨‍💻 Author
-
-Built as a developer test task for a digital recruitment system.
-
-For questions, open an issue on GitHub.
-text
-
-
-Let me know if you need adjustments (e.g., more details on USSD session handling or deployment troubleshooting).
 

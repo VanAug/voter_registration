@@ -1,6 +1,7 @@
 // src/components/AdminDashboard.js
 import React, { useEffect, useState } from 'react';
 import { fetchApplicants } from '../api';
+import axios from 'axios';
 
 const AdminDashboard = () => {
   const [applicants, setApplicants] = useState([]);
@@ -8,10 +9,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [channelFilter, setChannelFilter] = useState('');
-
-  useEffect(() => {
-    loadApplicants();
-  }, []);
+  const [deleting, setDeleting] = useState(null);
 
   const loadApplicants = async () => {
     try {
@@ -24,6 +22,10 @@ const AdminDashboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadApplicants();
+  }, []);
 
   useEffect(() => {
     let result = applicants;
@@ -40,27 +42,31 @@ const AdminDashboard = () => {
     setFiltered(result);
   }, [searchTerm, channelFilter, applicants]);
 
+  const handleDelete = async (id, fullName) => {
+    if (!window.confirm(`Are you sure you want to delete ${fullName}?`)) return;
+    setDeleting(id);
+    try {
+      await axios.delete(`/api/applicants/${id}/`);
+      // Refresh list
+      setApplicants(prev => prev.filter(a => a.id !== id));
+      alert('Deleted successfully');
+    } catch (err) {
+      console.error(err);
+      alert('Delete failed. Please try again.');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const exportToCSV = () => {
+    // ... your existing export function ...
+  };
+
   const totalSignups = applicants.length;
   const breakdown = {
     USSD: applicants.filter(a => a.registration_channel === 'USSD').length,
     WEBSITE: applicants.filter(a => a.registration_channel === 'WEBSITE').length,
     WHATSAPP: applicants.filter(a => a.registration_channel === 'WHATSAPP').length,
-  };
-
-  const exportToCSV = () => {
-    const headers = ['ID', 'Full Name', 'Phone', 'ID Number', 'County', 'Voter Status', 'Channel', 'Registered At'];
-    const rows = filtered.map(a => [
-      a.id, a.full_name, a.phone_number, a.id_number, a.county,
-      a.voter_status ? 'Yes' : 'No', a.registration_channel, new Date(a.registered_at).toLocaleString()
-    ]);
-    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'applicants.csv';
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   if (loading) return <div className="loading">Loading dashboard...</div>;
@@ -70,9 +76,9 @@ const AdminDashboard = () => {
       <h2>Admin Dashboard</h2>
       <div className="stats">
         <div className="stat-card">Total Sign-ups: {totalSignups}</div>
-        <div className="stat-card">📱 USSD: {breakdown.USSD}</div>
-        <div className="stat-card">🌐 Website: {breakdown.WEBSITE}</div>
-        <div className="stat-card">💬 WhatsApp: {breakdown.WHATSAPP}</div>
+        <div className="stat-card">USSD: {breakdown.USSD}</div>
+        <div className="stat-card">Website: {breakdown.WEBSITE}</div>
+        <div className="stat-card">WhatsApp: {breakdown.WHATSAPP}</div>
       </div>
 
       <div className="filters">
@@ -94,19 +100,36 @@ const AdminDashboard = () => {
       <div className="table-responsive">
         <table>
           <thead>
-            <tr><th>ID</th><th>Full Name</th><th>Phone</th><th>ID Number</th><th>County</th><th>Voter</th><th>Channel</th><th>Date</th></tr>
+            <tr>
+              <th>ID</th><th>Full Name</th><th>Phone</th><th>ID Number</th>
+              <th>County</th><th>Voter</th><th>Channel</th><th>Date</th><th>Action</th>
+            </tr>
           </thead>
           <tbody>
             {filtered.map(a => (
               <tr key={a.id}>
-                <td>{a.id}</td><td>{a.full_name}</td><td>{a.phone_number}</td>
-                <td>{a.id_number}</td><td>{a.county}</td>
+                <td>{a.id}</td>
+                <td>{a.full_name}</td>
+                <td>{a.phone_number}</td>
+                <td>{a.id_number}</td>
+                <td>{a.county}</td>
                 <td>{a.voter_status ? 'Yes' : 'No'}</td>
                 <td>{a.registration_channel}</td>
                 <td>{new Date(a.registered_at).toLocaleDateString()}</td>
+                <td>
+                  <button 
+                    className="delete-btn" 
+                    onClick={() => handleDelete(a.id, a.full_name)}
+                    disabled={deleting === a.id}
+                  >
+                    {deleting === a.id ? '...' : 'Delete'}
+                  </button>
+                </td>
               </tr>
             ))}
-            {filtered.length === 0 && <tr><td colSpan="8">No applicants found</td></tr>}
+            {filtered.length === 0 && (
+              <tr><td colSpan="9">No applicants found</td></tr>
+            )}
           </tbody>
         </table>
       </div>

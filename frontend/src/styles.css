@@ -379,3 +379,25 @@ tr:hover td {
     font-size: 0.75rem;
   }
 }
+
+.delete-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  width: auto;
+  box-shadow: none;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: none;
+}
+
+.delete-btn:disabled {
+  background: #fca5a5;
+  cursor: wait;
+}

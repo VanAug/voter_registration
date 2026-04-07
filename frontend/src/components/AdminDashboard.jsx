@@ -46,7 +46,7 @@ const AdminDashboard = () => {
     if (!window.confirm(`Are you sure you want to delete ${fullName}?`)) return;
     setDeleting(id);
     try {
-      await axios.delete(`/api/applicants/${id}/`);
+      await axios.delete(`https://voter-registration-gn1a.onrender.com/api/applicants/${id}/`);
       // Refresh list
       setApplicants(prev => prev.filter(a => a.id !== id));
       alert('Deleted successfully');

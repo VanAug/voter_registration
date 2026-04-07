@@ -16,7 +16,7 @@ def whatsapp_webhook(request: HttpRequest):
     session_data = cache.get(cache_key, {})
 
     resp = MessagingResponse()
-    msg = resp.message()
+ #   msg = resp.message()
 
     response_text = "Welcome to the Voter Registration Bot!\n\nType *MENU* to see available options."
 
@@ -145,5 +145,5 @@ def whatsapp_webhook(request: HttpRequest):
     else:
         response_text = "Invalid input.\n\nType *MENU* to see available options."
 
-    msg.body(response_text)
+    resp.message(response_text)
     return HttpResponse(str(resp), content_type='text/xml')

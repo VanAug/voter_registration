@@ -182,11 +182,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# backend/backend_settings/settings.py
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'whatsapp_cache_table',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'ussd-sessions',
     }
 }
 

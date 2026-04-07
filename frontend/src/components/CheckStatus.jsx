@@ -17,7 +17,7 @@ const CheckStatus = () => {
     setError('');
     setResult(null);
     try {
-      const response = await axios.get(`/api/check-status/${idNumber.trim()}/`);
+      const response = await axios.get(`https://voter-registration-gn1a.onrender.com/api/check-status/${idNumber.trim()}/`);
       if (response.data.found) {
         setResult(response.data.data);
       } else {

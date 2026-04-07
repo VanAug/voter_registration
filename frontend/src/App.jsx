@@ -13,7 +13,6 @@ function App() {
         <nav className="navbar">
           <Link to="/">Register</Link>
           <Link to="/check-status">Check Status</Link>
-          <Link to="/admin">Admin Dashboard</Link>
         </nav>
         <Routes>
           <Route path="/" element={<RegistrationForm />} />

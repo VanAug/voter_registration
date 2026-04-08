@@ -19,7 +19,6 @@ function AppContent() {
           <Link to="/">Home</Link>
           <Link to="/register">Register</Link>
           <Link to="/check-status">Check Status</Link>
-          <Link to="/admin">Admin</Link>
         </nav>
       )}
 

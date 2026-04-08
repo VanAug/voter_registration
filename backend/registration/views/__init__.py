@@ -4,6 +4,7 @@ from .api_views import (
     WebsiteRegistrationView,
     WhatsAppRegistrationView,
     USSDSimulationView,
+    AdminLoginView,
 )
 from .ussd_views import africastalking_ussd_callback
 from .whatsapp_views import whatsapp_webhook
@@ -16,6 +17,7 @@ __all__ = [
     'WebsiteRegistrationView',
     'WhatsAppRegistrationView',
     'USSDSimulationView',
+    'AdminLoginView',
     'africastalking_ussd_callback',
     'whatsapp_webhook',
     'check_status_by_id',
